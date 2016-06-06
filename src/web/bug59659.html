@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Test</title>
+    <script>
+        var ws = null;
+        var i=0;
+        var myVar = setInterval(myTimer, 10);
+        function myTimer() {
+            if(ws) return;
+            ws = new WebSocket("ws://localhost:8080/tomcat-bugs/bug59659");
+            console.log("reconnecting " + i++);
+            ws.onopen = function() {
+               //ws.send("Message to send");
+               console.log("onocpen " + i++);
+               ws.close();
+               ws = null;
+            };
+                
+            ws.onmessage = function (evt) { 
+               var received_msg = evt.data;
+               console.log("onmessage " + evt.data);
+            };
+                
+            ws.onclose = function(){
+             console.log("onclose");
+            };
+
+        }
+        window.onbeforeunload = function(){
+            if(ws) ws.close();
+        }
+    </script>
+</head>
+<body>
+    <h2>WebSocket test</h2>
+</body>
