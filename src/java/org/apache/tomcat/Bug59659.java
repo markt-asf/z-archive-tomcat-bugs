@@ -23,11 +23,10 @@ import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
-
 import org.apache.tomcat.websocket.WsSession;
 
-@ServerEndpoint(value = "/bug59659")
+// Disabled now bug has been fixed
+//@ServerEndpoint(value = "/bug59659")
 public class Bug59659 {
     private static final AtomicInteger count  = new AtomicInteger (0);
 
