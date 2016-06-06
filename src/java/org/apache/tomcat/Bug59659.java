@@ -32,26 +32,30 @@ public class Bug59659 {
     private static final AtomicInteger count  = new AtomicInteger (0);
 
 	@OnOpen
-    public void wsOpen(@SuppressWarnings("unused") Session session){
-        int c = count.incrementAndGet();
-        System.out.println("WS Opened " + c);
+    public void wsOpen(@SuppressWarnings("unused") Session session) {
+        count.incrementAndGet();
     }
 
     @OnError
-    public void wsError(Session session, @SuppressWarnings("unused") Throwable t){
+    public void wsError(Session session, Throwable t) {
         System.out.println("WS Error ");
+        t.printStackTrace();
+        (new Exception()).printStackTrace();
         try {
             WsSession s = (WsSession) session;
             s.close();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
     }
 
     @OnClose
-    public void wsClosed(Session session){
-        int c = count.decrementAndGet();
-        System.out.println("WS Closed " + c);
+    public void wsClosed(Session session) {
+        count.decrementAndGet();
         try {
             session.close();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
     }
 }
