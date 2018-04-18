@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 
 import javax.net.ssl.SSLContext;
@@ -86,6 +85,6 @@ public class Bug59664 {
         	lastRead = is.read(buf, read, 1024 - read);
         }
         System.out.println("Response body:");
-        System.out.println(new String(buf, 0, read, StandardCharsets.UTF_8));
+        System.out.println(new String(buf, 0, read, "UTF-8"));
     }
 }
