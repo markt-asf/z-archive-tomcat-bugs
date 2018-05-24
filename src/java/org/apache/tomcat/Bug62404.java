@@ -33,6 +33,13 @@ public class Bug62404 {
 
             System.out.println("Editor set value at   " + System.nanoTime());
             bean.setFlag(true);
+
+            // Ensure thread stop doesn't impact the result
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                // Ignore
+            }
         }
     }
 
