@@ -1,0 +1,12 @@
+grant {
+    permission java.lang.RuntimePermission "createClassLoader";
+    permission java.lang.RuntimePermission "setContextClassLoader";
+};
+
+grant codeBase "file:/home/mark/repos/asf-public/tomcat/trunk/output/build/lib/el-api.jar" {
+        permission java.security.AllPermission;
+};
+
+grant codeBase "file:/home/mark/repos/asf-public/tomcat/trunk/output/build/lib/jasper-el.jar" {
+        permission java.security.AllPermission;
+};
