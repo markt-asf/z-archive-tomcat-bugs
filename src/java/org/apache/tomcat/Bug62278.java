@@ -33,7 +33,7 @@ public class Bug62278 extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         AsyncContext ac = req.startAsync();
-        ac.setTimeout(10000);
+        ac.setTimeout(3000);
 
         (new Thread(new DelayComplete(ac))).start();
     }
@@ -49,7 +49,7 @@ public class Bug62278 extends HttpServlet {
         @Override
         public void run() {
             try {
-                Thread.sleep(20000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 // Should never happen in this test case
                 e.printStackTrace();
