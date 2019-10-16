@@ -17,7 +17,7 @@ public class Bug63003 extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 
         resp.setContentType("text/plain");
         resp.setCharacterEncoding("UTF-8");
@@ -26,7 +26,7 @@ public class Bug63003 extends HttpServlet {
         resp.flushBuffer();
 
         // Put request in async mode and ignore it
-        AsyncContext ac = req.startAsync();
+        final AsyncContext ac = req.startAsync();
         ac.addListener(new Bug63003AsyncListener());
         ac.setTimeout(60000);
 
