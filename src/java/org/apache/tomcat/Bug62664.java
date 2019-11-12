@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/*")
-@MultipartConfig
+//@WebServlet("/*")
+//@MultipartConfig
 public class Bug62664 extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
