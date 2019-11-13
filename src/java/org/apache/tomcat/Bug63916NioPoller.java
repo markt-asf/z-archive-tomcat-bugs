@@ -43,7 +43,7 @@ public class Bug63916NioPoller {
                 // Make it non-blocking
                 socketChannel.configureBlocking(false);
                 System.out.println("Default send buffer size is [" + socketChannel.socket().getSendBufferSize() + "]");
-                socketChannel.socket().setSendBufferSize(4537);
+                //socketChannel.socket().setSendBufferSize(16*1024);
 
                 Connection connection = new Connection(socketChannel, poller);
 
@@ -101,19 +101,19 @@ public class Bug63916NioPoller {
                     }
 
                     // Wait for socket(s) to report being ready for requested events
-                    long selectStart = System.currentTimeMillis();
+                    //long selectStart = System.currentTimeMillis();
                     int keyCount = selector.select();
                     if (keyCount == 0) {
                         continue;
                     }
-                    long selectEnd = System.currentTimeMillis();
+                    //long selectEnd = System.currentTimeMillis();
                     Iterator<SelectionKey> selectionKeys = selector.selectedKeys().iterator();
                     while (selectionKeys.hasNext()) {
                         SelectionKey selectionKey = selectionKeys.next();
                         selectionKeys.remove();
 
                         if (selectionKey.isWritable()) {
-                            System.out.println("select() took [" + (selectEnd - selectStart) + "] milliseconds");
+                            //System.out.println("select() took [" + (selectEnd - selectStart) + "] milliseconds");
                             selectionKey.interestOps(0);
                             Connection connection = (Connection) selectionKey.attachment();
                             executor.execute(connection);
@@ -189,7 +189,7 @@ public class Bug63916NioPoller {
                     }
 
                     total += thisWrite;
-                    System.out.println("This write [" + thisWrite + "], total [" + total + "]");
+                    //System.out.println("This write [" + thisWrite + "], total [" + total + "]");
                 } while (thisWrite > 0);
 
                 poller.writeInterest(this);
