@@ -41,7 +41,7 @@ public class Bug63916NioPoller {
                 // Make it non-blocking
                 socketChannel.configureBlocking(false);
                 System.out.println("Default send buffer size is [" + socketChannel.socket().getSendBufferSize() + "]");
-                //socketChannel.socket().setSendBufferSize(8192);
+                socketChannel.socket().setSendBufferSize(8192);
 
                 Connection connection = new Connection(socketChannel, poller);
 
@@ -97,16 +97,19 @@ public class Bug63916NioPoller {
                     }
 
                     // Wait for socket(s) to report being ready for requested events
+                    long selectStart = System.currentTimeMillis();
                     int keyCount = selector.select();
                     if (keyCount == 0) {
                         continue;
                     }
+                    long selectEnd = System.currentTimeMillis();
                     Iterator<SelectionKey> selectionKeys = selector.selectedKeys().iterator();
                     while (selectionKeys.hasNext()) {
                         SelectionKey selectionKey = selectionKeys.next();
                         selectionKeys.remove();
 
                         if (selectionKey.isWritable()) {
+                            System.out.println("select() took [" + (selectEnd - selectStart) + "] milliseconds");
                             selectionKey.interestOps(0);
                             Connection connection = (Connection) selectionKey.attachment();
                             Thread connectionThread = new Thread(connection);
@@ -168,24 +171,23 @@ public class Bug63916NioPoller {
         @Override
         public void run() {
             try {
-                if (!data.hasRemaining()) {
-                    data.clear();
-                }
-                int thisWrite = socketChannel.write(data);
+                int thisWrite;
+                do {
+                    if (!data.hasRemaining()) {
+                        data.clear();
+                    }
+                    thisWrite = socketChannel.write(data);
 
-                if (thisWrite < 0) {
-                    poller.stop();
-                    return;
-                }
+                    if (thisWrite < 0 || total >= 10 * 1024 * 1024) {
+                        poller.stop();
+                        return;
+                    }
 
-                total += thisWrite;
-                System.out.println("This write [" + thisWrite + "], total [" + total + "]");
+                    total += thisWrite;
+                    System.out.println("This write [" + thisWrite + "], total [" + total + "]");
+                } while (thisWrite > 0);
 
-                if (total < 10 * 1024 * 1024) {
-                    poller.writeInterest(this);
-                } else {
-                    poller.stop();
-                }
+                poller.writeInterest(this);
             } catch (IOException | BufferOverflowException e) {
                 e.printStackTrace(System.out);
             }
