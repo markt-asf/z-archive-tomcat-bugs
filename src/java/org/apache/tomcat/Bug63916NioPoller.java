@@ -9,6 +9,8 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Bug63916NioPoller {
 
@@ -41,7 +43,7 @@ public class Bug63916NioPoller {
                 // Make it non-blocking
                 socketChannel.configureBlocking(false);
                 System.out.println("Default send buffer size is [" + socketChannel.socket().getSendBufferSize() + "]");
-                socketChannel.socket().setSendBufferSize(8192);
+                socketChannel.socket().setSendBufferSize(4537);
 
                 Connection connection = new Connection(socketChannel, poller);
 
@@ -75,6 +77,8 @@ public class Bug63916NioPoller {
 
         @Override
         public void run() {
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
 
             try {
                 while (running) {
@@ -112,8 +116,7 @@ public class Bug63916NioPoller {
                             System.out.println("select() took [" + (selectEnd - selectStart) + "] milliseconds");
                             selectionKey.interestOps(0);
                             Connection connection = (Connection) selectionKey.attachment();
-                            Thread connectionThread = new Thread(connection);
-                            connectionThread.start();
+                            executor.execute(connection);
                         } else {
                             throw new IOException("Key not writeable");
                         }
@@ -121,6 +124,8 @@ public class Bug63916NioPoller {
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
+            } finally {
+                executor.shutdown();
             }
         }
 
