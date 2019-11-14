@@ -39,6 +39,13 @@ public class Bug63916NioPoller {
         @Override
         public void run() {
             try {
+                // Need to set the SelectorProvider before the Poller is created
+
+                // Available on Linux
+                //System.setProperty("java.nio.channels.spi.SelectorProvider", "sun.nio.ch.PollSelectorProvider");
+                // Default on Linux
+                //System.setProperty("java.nio.channels.spi.SelectorProvider", "sun.nio.ch.EPollSelectorProvider");
+
                 // Start the Poller
                 Poller poller = new Poller();
                 Thread pollerThread = new Thread(poller);
@@ -53,11 +60,15 @@ public class Bug63916NioPoller {
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 // Make it non-blocking
                 socketChannel.configureBlocking(false);
+                System.out.println("Java Runtime Name:    " + System.getProperty("java.runtime.name"));
+                System.out.println("Java VM name:         " + System.getProperty("java.vm.name"));
+                System.out.println("Java Runtime Version: " + System.getProperty("java.runtime.version"));
                 System.out.println("Selector provider: " + SelectorProvider.provider());
                 System.out.println("Default send buffer size is [" + socketChannel.socket().getSendBufferSize() + "]");
                 if (sendBufferSize != -1) {
                     socketChannel.socket().setSendBufferSize(sendBufferSize);
                 }
+                System.out.println("Used send buffer size is [" + socketChannel.socket().getSendBufferSize() + "]");
 
                 Connection connection = new Connection(socketChannel, poller);
 
