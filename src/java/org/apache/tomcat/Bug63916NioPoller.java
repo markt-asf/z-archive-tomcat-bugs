@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /*
+ * Usage: Run the test and then use "telnet 127.0.0.1 8080" as the client.
+ *
  * Test results
  * Single runs. Rounded to nearest 10ms.
  *
