@@ -8,6 +8,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.spi.SelectorProvider;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,13 +18,23 @@ public class Bug63916NioPoller {
 
     public static void main(String[] args) throws Exception {
 
-        Server server = new Server();
+        int sendBufferSize = -1;
+        if (args != null && args.length > 0) {
+            sendBufferSize = Integer.parseInt(args[0]);
+        }
+        Server server = new Server(sendBufferSize);
         Thread serverThread = new Thread(server);
         serverThread.start();
         serverThread.join();
     }
 
     public static class Server implements Runnable {
+
+        private final int sendBufferSize;
+
+        public Server(int sendBufferSize) {
+            this.sendBufferSize = sendBufferSize;
+        }
 
         @Override
         public void run() {
@@ -42,8 +53,11 @@ public class Bug63916NioPoller {
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 // Make it non-blocking
                 socketChannel.configureBlocking(false);
+                System.out.println("Selector provider: " + SelectorProvider.provider());
                 System.out.println("Default send buffer size is [" + socketChannel.socket().getSendBufferSize() + "]");
-                //socketChannel.socket().setSendBufferSize(16*1024);
+                if (sendBufferSize != -1) {
+                    socketChannel.socket().setSendBufferSize(sendBufferSize);
+                }
 
                 Connection connection = new Connection(socketChannel, poller);
 
