@@ -29,6 +29,16 @@ import java.util.concurrent.Executors;
  * MacOS 10.14.6    Adopt   11.0.3+7        Poll        340         460
  * MacOS 10.14.6    Adopt   13.0.1+9        KQueue (D)  340         430
  * MacOS 10.14.6    Adopt   13.0.1+9        Poll        330         460
+ *
+ * markt's desktop                                               (forced to 2304 bytes)
+ * Ubuntu 18.04.3   OpenJDK 13.0.1+9        EPoll (D)   420      56,130
+ * Ubuntu 18.04.3   OpenJDK 13.0.1+9        Poll        450      56,230
+ * Ubuntu 18.04.3   Adopt   11.0.4+11       EPoll (D)   470      56,140
+ * Ubuntu 18.04.3   Adopt   11.0.4+11       Poll        450      56,160
+ * Ubuntu 18.04.3   Adopt   1.8.0-222-b10   EPoll (D)   530      56,150
+ * Ubuntu 18.04.3   Adopt   1.8.0-222-b10   Poll        420      56,100
+ * Ubuntu 18.04.3   Sun     1.6.0_45-b06    EPoll (D)   400      56,080
+ * Ubuntu 18.04.3   Sun     1.6.0_45-b06    Poll        410      56,100
  */
 public class Bug63916NioPoller {
 
@@ -58,10 +68,12 @@ public class Bug63916NioPoller {
             try {
                 // Need to set the SelectorProvider before the Poller is created
 
-                // Available on Linux, MacOS (7, 8, 11, 13)
+                // Available on Linux (8, 11, 13), MacOS (7, 8, 11, 13)
                 //System.setProperty("java.nio.channels.spi.SelectorProvider", "sun.nio.ch.PollSelectorProvider");
-                // Default on Linux
+
+                // Default on Linux (6, 8, 11, 13)
                 //System.setProperty("java.nio.channels.spi.SelectorProvider", "sun.nio.ch.EPollSelectorProvider");
+
                 // Default on MacOS (7, 8, 9, 10, 11, 13)
                 //System.setProperty("java.nio.channels.spi.SelectorProvider", "sun.nio.ch.KQueueSelectorProvider");
 
@@ -104,7 +116,9 @@ public class Bug63916NioPoller {
                 System.out.println("Writing 10MB took [" + (endTime - startTime) + "] milliseconds");
 
                 serverSocketChannel.close();
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -246,7 +260,9 @@ public class Bug63916NioPoller {
                 } while (thisWrite > 0);
 
                 poller.writeInterest(this);
-            } catch (IOException | BufferOverflowException e) {
+            } catch (IOException e) {
+                e.printStackTrace(System.out);
+            } catch (BufferOverflowException e) {
                 e.printStackTrace(System.out);
             }
         }
