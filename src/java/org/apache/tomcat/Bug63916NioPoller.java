@@ -13,6 +13,23 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/*
+ * Test results
+ * Single runs. Rounded to nearest 10ms.
+ *
+ * OS               JRE     JRE version     Selector    8k (ms)     1k (ms)
+ * markt's MacBook
+ * MacOS 10.14.6    Oracle  1.7.0_80-b15    KQueue (D)  310         430
+ * MacOS 10.14.6    Oracle  1.7.0_80-b15    Poll        320         420
+ * MacOS 10.14.6    Adopt   1.8.0_212-b03   KQueue (D)  300         400
+ * MacOS 10.14.6    Adopt   1.8.0_212-b03   Poll        320         420
+ * MacOS 10.14.6    Oracle  9.0.4+11        KQueue (D)  320         470
+ * MacOS 10.14.6    Oracle  10.2.3+13       KQueue (D)  320         490
+ * MacOS 10.14.6    Adopt   11.0.3+7        KQueue (D)  320         450
+ * MacOS 10.14.6    Adopt   11.0.3+7        Poll        340         460
+ * MacOS 10.14.6    Adopt   13.0.1+9        KQueue (D)  340         430
+ * MacOS 10.14.6    Adopt   13.0.1+9        Poll        330         460
+ */
 public class Bug63916NioPoller {
 
 
@@ -41,10 +58,12 @@ public class Bug63916NioPoller {
             try {
                 // Need to set the SelectorProvider before the Poller is created
 
-                // Available on Linux
+                // Available on Linux, MacOS (7, 8, 11, 13)
                 //System.setProperty("java.nio.channels.spi.SelectorProvider", "sun.nio.ch.PollSelectorProvider");
                 // Default on Linux
                 //System.setProperty("java.nio.channels.spi.SelectorProvider", "sun.nio.ch.EPollSelectorProvider");
+                // Default on MacOS (7, 8, 9, 10, 11, 13)
+                //System.setProperty("java.nio.channels.spi.SelectorProvider", "sun.nio.ch.KQueueSelectorProvider");
 
                 // Start the Poller
                 Poller poller = new Poller();
@@ -60,6 +79,7 @@ public class Bug63916NioPoller {
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 // Make it non-blocking
                 socketChannel.configureBlocking(false);
+                System.out.println("Java Vendor:          " + System.getProperty("java.vendor"));
                 System.out.println("Java Runtime Name:    " + System.getProperty("java.runtime.name"));
                 System.out.println("Java VM name:         " + System.getProperty("java.vm.name"));
                 System.out.println("Java Runtime Version: " + System.getProperty("java.runtime.version"));
@@ -82,6 +102,8 @@ public class Bug63916NioPoller {
                 long endTime = System.currentTimeMillis();
 
                 System.out.println("Writing 10MB took [" + (endTime - startTime) + "] milliseconds");
+
+                serverSocketChannel.close();
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
@@ -150,6 +172,11 @@ public class Bug63916NioPoller {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             } finally {
+                try {
+                    selector.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 executor.shutdown();
             }
         }
@@ -209,6 +236,7 @@ public class Bug63916NioPoller {
                     thisWrite = socketChannel.write(data);
 
                     if (thisWrite < 0 || total >= 10 * 1024 * 1024) {
+                        socketChannel.close();
                         poller.stop();
                         return;
                     }
