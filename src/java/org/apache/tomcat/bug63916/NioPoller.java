@@ -1,4 +1,4 @@
-package org.apache.tomcat;
+package org.apache.tomcat.bug63916;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -42,7 +42,7 @@ import java.util.concurrent.Executors;
  * Ubuntu 18.04.3   Sun     1.6.0_45-b06    EPoll (D)   400      56,080
  * Ubuntu 18.04.3   Sun     1.6.0_45-b06    Poll        410      56,100
  */
-public class Bug63916NioPoller {
+public class NioPoller {
 
 
     public static void main(String[] args) throws Exception {
