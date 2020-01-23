@@ -13,4 +13,21 @@ public class EchoArgs {
         }
         System.out.println("Args done");
     }
+
+    // For Commons Daemon
+    public static void init(String[] args) {
+        main(args);
+    }
+
+    public static void start() {
+        // NO-OP
+    }
+
+    public static void stop() {
+        // NO-OP
+    }
+
+    public static void destroy() {
+        // NO-OP
+    }
 }
