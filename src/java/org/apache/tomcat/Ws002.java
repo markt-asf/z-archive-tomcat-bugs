@@ -3,7 +3,7 @@ package org.apache.tomcat;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import javax.websocket.OnMessage;
+import jakarta.websocket.OnMessage;
 
 public class Ws002 {
 

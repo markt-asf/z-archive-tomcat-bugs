@@ -19,10 +19,10 @@ package org.apache.tomcat;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
 import org.apache.tomcat.websocket.WsSession;
 
 // Disabled now bug has been fixed

@@ -1,6 +1,6 @@
 package org.apache.tomcat.user005;
 
-import javax.websocket.*;
+import jakarta.websocket.*;
 
 public class WSEndpoint extends Endpoint {
     private WSConnection connection;

@@ -19,19 +19,19 @@ package org.apache.tomcat;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
+import jakarta.websocket.OnClose;
+import jakarta.websocket.OnError;
+import jakarta.websocket.OnMessage;
+import jakarta.websocket.OnOpen;
+import jakarta.websocket.Session;
+import jakarta.websocket.server.ServerEndpoint;
 
 @ServerEndpoint("/ws001")
 public class Ws001Server {
 
     private Session session;
     private boolean keepingrunning;
-    private static CopyOnWriteArraySet<Ws001Server> webSocketSet = new CopyOnWriteArraySet<Ws001Server>();
+    private static CopyOnWriteArraySet<Ws001Server> webSocketSet = new CopyOnWriteArraySet<>();
 
 
     @OnClose
