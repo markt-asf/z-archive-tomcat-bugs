@@ -26,4 +26,9 @@
   <description>
      Tomcat Bugs
   </description>
+  <!--
+  <absolute-ordering>
+    <others/>
+  </absolute-ordering>
+  -->
 </web-app>
