@@ -38,11 +38,11 @@ public class User003ELPerformance {
         variableMapper.setVariable("countries", expressionFactory.createValueExpression(new HashSet<>(Arrays.asList("AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH", "II", "JJ", "KK", "LL", "MM")), Set.class));
         variableMapper.setVariable("NN", expressionFactory.createValueExpression("NN", String.class));
         variableMapper.setVariable("ZZ", expressionFactory.createValueExpression("ZZ", String.class));
-        variableMapper.setVariable("I1", expressionFactory.createValueExpression(239235, Long.class));
-        variableMapper.setVariable("I2", expressionFactory.createValueExpression(569071142, Long.class));
-        variableMapper.setVariable("I3", expressionFactory.createValueExpression(-189245, Long.class));
-        variableMapper.setVariable("D1", expressionFactory.createValueExpression(129835.12512, Double.class));
-        variableMapper.setVariable("D3", expressionFactory.createValueExpression(98982223.598731412, Double.class));
+        variableMapper.setVariable("I1", expressionFactory.createValueExpression(Long.valueOf(239235), Long.class));
+        variableMapper.setVariable("I2", expressionFactory.createValueExpression(Long.valueOf(569071142), Long.class));
+        variableMapper.setVariable("I3", expressionFactory.createValueExpression(Long.valueOf(-189245), Long.class));
+        variableMapper.setVariable("D1", expressionFactory.createValueExpression(Double.valueOf(129835.12512), Double.class));
+        variableMapper.setVariable("D3", expressionFactory.createValueExpression(Double.valueOf(98982223.598731412), Double.class));
         variableMapper.setVariable("BT", expressionFactory.createValueExpression(Boolean.TRUE, Boolean.class));
         variableMapper.setVariable("BF", expressionFactory.createValueExpression(Boolean.FALSE, Boolean.class));
 
