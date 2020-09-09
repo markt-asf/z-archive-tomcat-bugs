@@ -8,6 +8,7 @@ import sun.jvmstat.monitor.MonitoredVm;
 import sun.jvmstat.monitor.StringMonitor;
 import sun.jvmstat.monitor.VmIdentifier;
 
+@SuppressWarnings("restriction")
 public class Daemon388 {
 
     public static void main(String[] args) throws Exception {
